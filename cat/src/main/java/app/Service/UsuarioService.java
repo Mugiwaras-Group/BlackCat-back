@@ -7,6 +7,7 @@ import javax.management.RuntimeErrorException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication; // Corrigido para a importação correta do Spring
@@ -22,8 +23,7 @@ public class UsuarioService {
 	private UsuarioRepository usuarioRepository;
 
 	@Autowired
-	private BCryptPasswordEncoder bCryptPasswordEncoder;
-
+	private PasswordEncoder passwordEncoder;
 	@Autowired
 	private LoginService loginService;
 
@@ -34,7 +34,7 @@ public class UsuarioService {
 		}
 
 		usuario.setAtivo(true);
-		usuario.setSenha(this.bCryptPasswordEncoder.encode(usuario.getSenha()));
+		usuario.setSenha(this.passwordEncoder.encode(usuario.getSenha()));
 		this.usuarioRepository.save(usuario);
 		return "Usuário salvo com sucesso";
 	}
@@ -57,9 +57,9 @@ public class UsuarioService {
 
 		if (optional.isPresent()) {
 			Usuario userInDB = optional.get();
-			if (!bCryptPasswordEncoder.matches(usuario.getSenha(), userInDB.getSenha())
+			if (!passwordEncoder.matches(usuario.getSenha(), userInDB.getSenha())
 					&& !usuario.getSenha().isEmpty()) {
-				usuario.setSenha(this.bCryptPasswordEncoder.encode(usuario.getSenha()));
+				usuario.setSenha(this.passwordEncoder.encode(usuario.getSenha()));
 			} else {
 				usuario.setSenha(userInDB.getSenha());
 			}

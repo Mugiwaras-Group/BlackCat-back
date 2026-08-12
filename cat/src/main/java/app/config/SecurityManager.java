@@ -13,9 +13,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import app.auth.LoginRepository;
+import jakarta.annotation.PostConstruct;
 
 @Configuration
 public class SecurityManager {
+	
+	@PostConstruct
+	public void init() {
+	    System.out.println(">>> SECURITY MANAGER CARREGADO <<<");
+	}
 	
 	@Autowired
 	private LoginRepository loginRepository;
@@ -25,6 +31,7 @@ public class SecurityManager {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+
 
 	
 	@Bean
