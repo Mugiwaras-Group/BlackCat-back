@@ -1,0 +1,63 @@
+name: Backend CI
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: rootpass
+          MYSQL_DATABASE: blackcat
+          MYSQL_USER: blackcat
+          MYSQL_PASSWORD: blackcatpass
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -prootpass"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_NAME: blackcat
+      DB_USER: blackcat
+      DB_PASSWORD: blackcatpass
+      SPRING_PROFILES_ACTIVE: test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Compile Project
+        working-directory: ./cat
+        run: ./mvnw clean compile
+
+      - name: Tests
+        working-directory: ./cat
+        run: ./mvnw test
+
+      - name: Build JAR
+        working-directory: ./cat
+        run: ./mvnw package -DskipTests
+
+      - name: Publish JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-jar
+          path: cat/target/*.jar
