@@ -44,24 +44,20 @@ jobs:
           java-version: '17'
           cache: maven
 
-      - name: Check MySQL
-        run: |
-          for i in {1..30}; do
-            mysqladmin ping -h 127.0.0.1 -uroot -prootpass && break
-            sleep 2
-          done
-
       - name: Compile Project
-        run: .\mvnw.cmd clean compile
+        working-directory: ./cat
+        run: ./mvnw clean compile
 
       - name: Tests
-        run: .\mvnw.cmd test
+        working-directory: ./cat
+        run: ./mvnw test
 
       - name: Build JAR
-        run: .\mvnw.cmd package -DskipTests
+        working-directory: ./cat
+        run: ./mvnw package -DskipTests
 
       - name: Publish JAR
         uses: actions/upload-artifact@v4
         with:
           name: backend-jar
-          path: target/*.jar
+          path: cat/target/*.jar
