@@ -83,6 +83,4 @@ public class ProdutoService {
 		this.produtoRepository.save(produtoInDB);
 		return "Produto ativado com sucesso!";
 	}
-
-	//teste
 }
