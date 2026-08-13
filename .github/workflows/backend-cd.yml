@@ -76,4 +76,4 @@ jobs:
 
             docker compose up -d backend
 
-            docker image prune -f-
+            docker image prune -f
