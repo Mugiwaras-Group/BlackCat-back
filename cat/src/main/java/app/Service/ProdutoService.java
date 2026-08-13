@@ -81,7 +81,7 @@ public class ProdutoService {
 		Produto produtoInDB = this.findById(id);
 		produtoInDB.setAtivo(true);
 		this.produtoRepository.save(produtoInDB);
-		return "Produto ativado com sucesso, uhum foz do iguaçu!";
+		return "Produto ativado com sucesso!";
 	}
 
 	//teste
